@@ -6,6 +6,10 @@ from bot.handlers import router
 
 from bd.models import main as create_db
 
+from flask import Flask
+from threading import Thread
+import os
+
 dp = Dispatcher()
 
 async def main():
@@ -17,8 +21,24 @@ async def main():
     await dp.start_polling(bot)
 
 
+def start_bot():
+    asyncio.run(main())
+
+
+app = Flask(__name__)
+
+@app.route("/")
+@app.route("/health")
+def check_status():
+    return "OK", 200
+
+
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        bot_thread = Thread(target=start_bot)
+        bot_thread.start()
+
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)
     except KeyboardInterrupt:
         pass
