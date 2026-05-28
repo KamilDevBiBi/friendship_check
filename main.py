@@ -21,11 +21,8 @@ async def main():
     await dp.start_polling(bot)
 
 
-def start_bot():
-    asyncio.run(main())
-
-
 app = Flask(__name__)
+
 
 @app.route("/")
 @app.route("/health")
@@ -33,12 +30,17 @@ def check_status():
     return "OK", 200
 
 
+def run_server():
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+    
+
 if __name__ == "__main__":
     try:
-        bot_thread = Thread(target=start_bot)
+        bot_thread = Thread(target=run_server)
         bot_thread.start()
 
-        port = int(os.environ.get('PORT', 5000))
-        app.run(host='0.0.0.0', port=port)
+        
+        asyncio.run(main())
     except KeyboardInterrupt:
         pass
