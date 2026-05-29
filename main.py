@@ -6,7 +6,7 @@ from bot.handlers import router
 
 from bd.models import main as create_db
 
-from flask import Flask
+from flask import Flask, render_template
 from threading import Thread
 import os
 
@@ -27,7 +27,7 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/health")
 def check_status():
-    return "OK", 200
+    return render_template("main.html")
 
 
 def run_server():
