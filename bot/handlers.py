@@ -77,6 +77,8 @@ async def greeting(message: Message, state: FSMContext):
 
 @router.message(Command("start_test"))
 async def send_friend_test(message: Message, state: FSMContext):
+    await awake_server()
+    
     user_answers = await rq.get_user_answers(message.from_user.id) # Если пользователь прошель весь тест и результаты уже есть в БД
     cur_answers = await state.get_value("answers") # Если пользователь не до конца прошел тест (результаты еще не сохранены в БД)
     friend = await state.get_value("is_friend") # Если пользователь проходит чей-то тест
