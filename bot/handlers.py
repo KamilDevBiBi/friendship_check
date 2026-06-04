@@ -11,6 +11,14 @@ import bd.requests as rq
 from bd.requests import User
 
 from copy import deepcopy
+from aiohttp import ClientSession
+
+
+SERVER_URL = "https://friendship-check.onrender.com"
+async def awake_server():
+    async with ClientSession() as session:
+        async with session.get(SERVER_URL) as res:
+            return res
 
 
 class AnswersForm(StatesGroup):
@@ -27,6 +35,7 @@ FRIENDSHIP_LEVELS = ["Невидимый друг 🫥", "Пересекалис
 
 @router.message(CommandStart())
 async def greeting(message: Message, state: FSMContext):
+    await awake_server()
     await rq.load_user(message.from_user.id, message.from_user.first_name, message.from_user.username)
 
     args = message.text.split(maxsplit=1)
